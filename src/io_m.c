@@ -51,7 +51,7 @@ char **open_source_files_d()
             {
                 ini_s += 5;
                 files = (char **) realloc(files, sizeof(char *) * ini_s);
-                tmp = files + index - 1;
+                tmp = files + index - 1; // set the tmp again in the right position.
                 if (files == NULL) return NULL;
             }
         }
