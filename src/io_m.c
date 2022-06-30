@@ -3,10 +3,11 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <string.h>
+#include <fcntl.h>
 
 #include "io_m.h"
 
-#define SOURCE_LIST     "/etc/apt/source.list"
+#define SOURCE_LIST     "/etc/apt/sources.list"
 #define SOURCE_LIST_D   "/etc/apt/sources.list.d/"
 
 
@@ -30,7 +31,7 @@ char **open_source_files_d()
 
     strcpy(*tmp, SOURCE_LIST);
 
-    int index = 1; // 1 because we already have one item inside.
+    int index = 1; 
     // try to open directory.
     // O(n) - complexity, where n = amount of source files. TODO - can be better than O(n)?
     while ((sources = readdir(dir)) != NULL)
@@ -62,8 +63,32 @@ char **open_source_files_d()
     return (char **) realloc(files, sizeof(char *) * (index + 1)); // reduce the memory to the absolute size of the array.
 }
 
-int read_source_file(char *dst, const char *name)
+int read_source_file(char **dst, const char *path)
 {
+    int fd = open(path, O_RDONLY);
+    int stat_err = 0;
+    int dst_err = 0;
+    int read_err = 0;
+    if (fd == -1) return -1;
+
+    // get the size of the file.
+    struct stat stat_buff;
+    stat_err = lstat(path, &stat_buff);
+    // allocate space for the incoming file.
+    (*dst) = (char *) malloc(sizeof(char) * stat_buff.st_size);
+    dst_err = (dst == NULL)? -1 : 0;
+
+    // read file.
+    read_err = read(fd, *dst, stat_buff.st_size);
+
+    if (stat_err == -1 || dst_err == -1 
+        || read_err == -1)
+    {
+        close(fd);
+        return -1;
+    }
+
+    close(fd);
     return 0;
 }
 

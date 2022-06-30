@@ -19,7 +19,7 @@ static inline void close_source_files_d(char **src)
 /**
  * Read the content of a source file.
  */
-extern int read_source_file(char *dst, const char *name);
+extern int read_source_file(char **dst, const char *path);
 
 extern int write_source_file(const char *src, const char *path);
 
