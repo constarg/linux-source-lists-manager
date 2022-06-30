@@ -21,11 +21,11 @@ char **open_source_files_d()
     if (dir == NULL) return NULL;
 
     // the files.
-    char **files = malloc(sizeof(char *) * ini_s);
+    char **files = (char **) malloc(sizeof(char *) * ini_s);
     if (files == NULL) return NULL;
 
     char **tmp = files;
-    (*tmp) = malloc(sizeof(char) * strlen(SOURCE_LIST) + 1);
+    (*tmp) = (char *) malloc(sizeof(char) * strlen(SOURCE_LIST) + 1);
     if (*tmp == NULL) return NULL;
 
     strcpy(*tmp, SOURCE_LIST);
@@ -39,7 +39,7 @@ char **open_source_files_d()
         if (sources->d_type == DT_REG)
         {
 
-            *(tmp + 1) = malloc(sizeof(char) * strlen(sources->d_name)
+            *(tmp + 1) = (char *) malloc(sizeof(char) * strlen(sources->d_name)
                                              + strlen(SOURCE_LIST_D) + 1);
             if ((tmp + 1) == NULL) return NULL;
 
@@ -50,7 +50,7 @@ char **open_source_files_d()
             if (index == ini_s)
             {
                 ini_s += 5;
-                files = realloc(files, sizeof(char *) * ini_s);
+                files = (char **) realloc(files, sizeof(char *) * ini_s);
                 tmp = files + index - 1;
                 if (files == NULL) return NULL;
             }
@@ -59,7 +59,7 @@ char **open_source_files_d()
     *(tmp + 1) = NULL;
 
     closedir(dir);
-    return realloc(files, sizeof(char *) * (index + 1)); // reduce the memory to the absolute size of the array.
+    return (char **) realloc(files, sizeof(char *) * (index + 1)); // reduce the memory to the absolute size of the array.
 }
 
 int read_source_file(char *dst, const char *name)
