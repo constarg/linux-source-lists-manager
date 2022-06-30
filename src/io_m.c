@@ -6,9 +6,7 @@
 #include <fcntl.h>
 
 #include "io_m.h"
-
-#define SOURCE_LIST     "/etc/apt/sources.list"
-#define SOURCE_LIST_D   "/etc/apt/sources.list.d/"
+#include "config.h"
 
 
 char **open_source_files_d()
@@ -41,7 +39,7 @@ char **open_source_files_d()
         {
 
             *(tmp + 1) = (char *) malloc(sizeof(char) * strlen(sources->d_name)
-                                             + strlen(SOURCE_LIST_D) + 1);
+                                                      + strlen(SOURCE_LIST_D) + 1);
             if ((tmp + 1) == NULL) return NULL;
 
             strcpy(*(tmp + 1), SOURCE_LIST_D);
