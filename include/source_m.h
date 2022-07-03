@@ -13,6 +13,7 @@ struct source_list
 {
     char *sl_name;               // The source list name.
     char *sl_loc;                // The source list location.
+    size_t sl_sources_s;         // The sources number.
     struct source *sl_sources;   // The source list sources.
 };
 
@@ -24,11 +25,11 @@ static inline void init_sl(struct source_list *sl)
 
 static inline void close_source_list(struct source_list *sl_src)
 {
-    free(sl_src->sl_name);
+    //free(sl_src->sl_name); // TODO - if you make it with malloc uncomment this.
     free(sl_src->sl_loc);
     // free the sources.
     for (int s = 0; 
-         sl_src->sl_sources[s].s_content; s++)
+         s < sl_src->sources_s; s++)
     {
         free(sl_src->sl_sources[s].s_content);
     }
