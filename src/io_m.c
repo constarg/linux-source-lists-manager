@@ -92,5 +92,11 @@ int read_source_file(char **dst, const char *path)
 
 int write_source_file(const char *src, const char *path)
 {
+    int fd = open(path, O_WRONLY);
+    if (fd == -1) return -1;
+
+    if (write(src, path, sizeof(src)) == -1) return -1;
+
+    close(fd);
     return 0;
 }
