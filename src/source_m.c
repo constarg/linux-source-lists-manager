@@ -5,12 +5,12 @@
 #include "config.h"
 #include "io_m.h"
 
-static struct source *retrieve_sources(const char *sl_path, size_t *size)
+static struct source *retrieve_sources(const char *sl_content, size_t *size)
 {
     struct source *s_tmp = NULL;
     size_t sources_s = 10;
     size_t lines_s = 0;
-    char **lines = retv_file_lines(sl_path, &lines_s);
+    char **lines = retv_file_lines(sl_content, &lines_s);
 
     // no lines has been found.
     if (lines == NULL) return NULL;
@@ -60,10 +60,6 @@ static inline char *retv_sl_name(const char *sl_path)
 
 int open_source_list(struct source_list *sl_dst, const char *sl_path)
 {
-    // read the conntent of the source list.
-    char *sl_content = NULL;
-    int sl_content_e = read_source_file(sl_content, sl_path);
-
     size_t sources_s = 0;
     struct source *sources = retrieve_sources(sl_path, &sources_s);
     char *sl_name = retv_sl_name(sl_path);
