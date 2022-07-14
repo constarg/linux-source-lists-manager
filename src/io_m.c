@@ -11,7 +11,7 @@
 
 char **open_source_files_d()
 {
-    size_t ini_s = 5;
+    size_t s_ini = 5;
     DIR *dir = NULL;
     struct dirent *sources = NULL;
 
@@ -20,7 +20,7 @@ char **open_source_files_d()
     if (dir == NULL) return NULL;
 
     // the files.
-    char **files = (char **) malloc(sizeof(char *) * ini_s);
+    char **files = (char **) malloc(sizeof(char *) * s_ini);
     if (files == NULL) return NULL;
 
     char **tmp = files;
@@ -48,8 +48,8 @@ char **open_source_files_d()
 
             if (index == ini_s)
             {
-                ini_s += 5;
-                files = (char **) realloc(files, sizeof(char *) * ini_s);
+                s_ini += 5;
+                files = (char **) realloc(files, sizeof(char *) * s_ini);
                 tmp = files + index - 1; // set the tmp again in the right position.
                 if (files == NULL) return NULL;
             }
@@ -61,42 +61,59 @@ char **open_source_files_d()
     return (char **) realloc(files, sizeof(char *) * (index + 1)); // reduce the memory to the absolute size of the array.
 }
 
-int read_source_file(char **dst, const char *path)
+int write_append_line(char *line, const char *path)
 {
-    int fd = open(path, O_RDONLY);
-    int stat_err = 0;
-    int dst_err = 0;
-    int read_err = 0;
-    if (fd == -1) return -1;
-
-    // get the size of the file.
-    struct stat stat_buff;
-    stat_err = lstat(path, &stat_buff);
-    // allocate space for the incoming file.
-    (*dst) = (char *) malloc(sizeof(char) * stat_buff.st_size);
-    dst_err = (dst == NULL)? -1 : 0;
-
-    // read file.
-    read_err = read(fd, *dst, stat_buff.st_size);
-
-    if (stat_err == -1 || dst_err == -1 
-        || read_err == -1)
-    {
-        close(fd);
-        return -1;
-    }
-
-    close(fd);
     return 0;
 }
 
-int write_source_file(const char *src, const char *path)
+
+static int get_line(char *dst, int fd)
 {
-    int fd = open(path, O_WRONLY);
-    if (fd == -1) return -1;
+    char buff = '\0';
+    size_t size = 0;
+    off_t begin = lseek(fd, 0, SEEK_CUR);
+    if (begin == -1) return -1;
 
-    if (write(src, path, sizeof(src)) == -1) return -1;
+    off_t dist;
 
-    close(fd);
+    while (buff != '\n' && buff != '\0')
+    {
+        if (read(fd, &buff, 1) == -1) return -1;
+        dist = lseek(fd, 1, SEEK_CUR);
+        if (dist == -1) return -1;
+        ++size;
+    }
+    if (buff == '\0' && size == 1) return 1;
+
+    size = (dist - begin);
+    if (lseek(fd, begin, SEEK_SET) == -1) return -1;
+
+    dst = malloc(sizeof(char) * size + 1);
+    if (dst == NULL) return -1;
+    // get the line.
+    if (read(fd, line, size) == -1) return -1;
+    dst[size] = '\0';
+
     return 0;
+}
+
+char **retv_file_lines(const char *path, size_t *lines_s)
+{
+    size_t s_lines = 10;
+    char *(*lines) = (char *) malloc(sizeof(char *) * s_lines); 
+    if (lines == NULL) return NULL;
+
+    int c_line = 0;
+    // get lines.
+    while (get_line(lines[c_line], fd) == 0)
+    {
+        ++c_line;
+        if (c_line == s_lines)
+        {
+            s_lines += 10;
+            lines = realloc(lines, sizeof(char *) * s_lines);
+        }
+    }
+    // TODO - Test this function.
+    return realloc(lines, sizeof(char *) * (c_line + 1));
 }
