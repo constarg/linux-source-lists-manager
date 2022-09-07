@@ -28,7 +28,7 @@ static struct source *retrieve_sources(const char *sl_content, size_t *size)
             (s_tmp + s_curr)->s_content = malloc(sizeof(char) * 
                                                    strlen(lines[l]) + 1);
             if ((s_tmp + s_curr)->s_content == NULL) return NULL;
-            strcpy(s_tmp + s_curr++, lines[l]);
+            strcpy((s_tmp + s_curr++)->s_content, lines[l]);
 
             if (s_curr == sources_s)
             {
@@ -69,11 +69,10 @@ int open_source_list(struct source_list *sl_dst, const char *sl_path)
     // again when you define from where you get the sl_path
     
     sl_dst->sl_name       = sl_name;
-    sl_dst->sl_loc        = sl_path;
+    sl_dst->sl_loc        = (char *) sl_path;
     sl_dst->sl_sources_s  = sources_s;
     sl_dst->sl_sources    = sources;
 
-    free(sl_content);
     return 0;
 }
 

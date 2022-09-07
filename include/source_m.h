@@ -29,7 +29,7 @@ static inline void close_source_list(struct source_list *sl_src)
     free(sl_src->sl_loc);
     // free the sources.
     for (int s = 0; 
-         s < sl_src->sources_s; s++)
+         s < sl_src->sl_sources_s; s++)
     {
         free(sl_src->sl_sources[s].s_content);
     }
