@@ -4,6 +4,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 
+
 static inline void close_source_files_d(char **src)
 {
     // O(n) complexity. Where n = the amount of source files.

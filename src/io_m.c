@@ -127,5 +127,5 @@ char **retv_file_lines(const char *path, size_t *sr_lines)
     *sr_lines = c_line + 1;
 
     close(fd);
-    return realloc(lines, sizeof(char *) * (c_line + 1));
+    return (char **) realloc(lines, sizeof(char *) * (c_line + 1));
 }
