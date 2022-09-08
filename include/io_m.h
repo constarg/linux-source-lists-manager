@@ -26,7 +26,7 @@ static inline void free_file_lines(char **lines, size_t size)
 
 extern char **open_source_files_d();
 
-extern int write_append_line(char *line, const char *path);
+extern int append_line(char *line, const char *path);
 
 extern char **retv_file_lines(const char *path, size_t *sr_lines);
 

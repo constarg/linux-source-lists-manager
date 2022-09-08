@@ -30,8 +30,7 @@ static inline void close_source_list(struct source_list *sl_src)
     // free the sources
     if (sl_src->sl_sources == NULL) return;
     for (int s = 0; 
-         s < sl_src->sl_s_sources; s++)
-    {
+         s < sl_src->sl_s_sources; s++) {
         free(sl_src->sl_sources[s].s_content);
     }
     free(sl_src->sl_sources);

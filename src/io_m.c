@@ -61,9 +61,14 @@ char **open_source_files_d()
     return (char **) realloc(files, sizeof(char *) * (index + 1)); // reduce the memory to the absolute size of the array.
 }
 
-int write_append_line(char *line, const char *path)
+int append_line(char *line, const char *path)
 {
-    // TODO - make this funtion to overwrite or append.
+    int fd = open(path, O_APPEND);
+    if (fd == -1) return -1;
+
+    if (write(fd, line, strlen(line)) == -1) return -1;
+
+    close(fd);
     return 0;
 }
 
