@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "source_m.h"
 #include "config.h"
-#include "io_m.h"
+
 
 static struct source *retrieve_sources(const char *sl_content, size_t *size)
 {
@@ -64,9 +66,6 @@ int open_source_list(struct source_list *sl_dst, const char *sl_path)
     char *sl_name = retv_sl_name(sl_path);
     if (sources == NULL) return -1;
 
-    // TODO - must do sl_name with malloc? check 
-    // again when you define from where you get the sl_path
-    
     sl_dst->sl_name       = sl_name;
     sl_dst->sl_loc        = (char *) sl_path;
     sl_dst->sl_s_sources  = s_sources;
@@ -105,11 +104,6 @@ int rm_source_list(const char *sl_name)
     if (remove(sl_path) == -1) return -1;
     free(sl_path);
     return 0;
-}
-
-int add_source(struct source_list *sl_src, const struct source s)
-{
-    return append_line(s.s_content, sl_src->sl_loc);
 }
 
 int rm_source(struct source_list *sl_src, int s_num)
