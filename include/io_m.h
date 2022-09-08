@@ -14,11 +14,20 @@ static inline void close_source_files_d(char **src)
     free(src);
 }
 
+static inline void free_file_lines(char **lines, size_t size)
+{
+    for (int f = 0; f < size; f++)
+    {
+        free(lines[f]);
+    }
+    free(lines);
+}
+
 extern char **open_source_files_d();
 
 extern int write_append_line(char *line, const char *path);
 
-extern char **retv_file_lines(const char *path, size_t *lines_s);
+extern char **retv_file_lines(const char *path, size_t *sr_lines);
 
 
 #endif
