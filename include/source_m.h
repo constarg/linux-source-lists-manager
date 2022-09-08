@@ -4,6 +4,8 @@
 #include <malloc.h>
 #include <memory.h>
 
+#include "io_m.h"
+
 struct source 
 {
     char *s_content;             // The content of a source ( url ).
@@ -71,7 +73,10 @@ extern int rm_source_list(const char *sl_name);
  * @param s The source to add.
  * @return 0 on success or -1 on error.
  */
-extern int add_source(struct source_list *sl_src, const struct source s);
+static inline int add_source(struct source_list *sl_src, const struct source s)
+{
+    return append_line(s.s_content, sl_src->sl_loc);
+}
 
 /**
  * Rmoeve a source from an existing source list.
