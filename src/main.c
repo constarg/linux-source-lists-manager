@@ -81,7 +81,21 @@ int main(int argc, char *argv[])
             }
         }
     } else if (!strcmp(argv[1], "--show-source-lists")) {
-        // TODO - print all source list files. on /etc/apt/source.list and on /etc/apt/source.d/*
+        /**
+         * Display all the source lists that
+         * exists in the system's two directories
+         * 1) /etc/apt/ and 2) /etc/apt/sources.d/
+         */
+        sl_dir source_lists = open_source_files_d();
+
+        printf("[*] ---- Source Lists ---- [*]\n\n");
+        for (int sl = 0; 
+             source_lists[sl]; sl++) {
+            printf("[%d] -> %s\n", sl, source_lists[sl]);
+        }
+
+        close_source_files_d(source_lists);
+    
     } else if (!strcmp(argv[1], "--create-source-list")) {
         if (argv[2] == NULL) return 0; // TODO - error.
         else {

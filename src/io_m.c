@@ -9,7 +9,7 @@
 #include "config.h"
 
 
-char **open_source_files_d()
+sl_dir open_source_files_d()
 {
     size_t s_ini = 5;
     DIR *dir = NULL;
@@ -32,11 +32,9 @@ char **open_source_files_d()
     int index = 1; 
     // try to open directory.
     // O(n) - complexity, where n = amount of source files. TODO - can be better than O(n)?
-    while ((sources = readdir(dir)) != NULL)
-    {
+    while ((sources = readdir(dir)) != NULL) {
         // if it's a file.
-        if (sources->d_type == DT_REG) 
-        {
+        if (sources->d_type == DT_REG) {
 
             *(tmp + 1) = (char *) malloc(sizeof(char) * strlen(sources->d_name)
                                                       + strlen(SOURCE_LIST_D) + 1);
@@ -46,8 +44,7 @@ char **open_source_files_d()
             strcat(*(++tmp), sources->d_name);
             index += 1;
 
-            if (index == s_ini) 
-            {
+            if (index == s_ini) {
                 s_ini += 5;
                 files = (char **) realloc(files, sizeof(char *) * s_ini);
                 tmp = files + index - 1; // set the tmp again in the right position.
@@ -100,7 +97,7 @@ static int get_line(char **dst, int fd)
 
     if ((*dst) == NULL) return -1;
     // get the line.
-    if (read(fd, (*dst), size - 1) == -1) return -1;
+    if (read(fd, (*dst), (size_t) (size - 1)) == -1) return -1;
 
     (*dst)[size] = '\0';
 
@@ -119,11 +116,9 @@ char **retv_file_lines(const char *path, size_t *sr_lines)
 
     int c_line = 0;
     // get lines.
-    while (get_line(&lines[c_line], fd) == 0)
-    {
+    while (get_line(&lines[c_line], fd) == 0) {
         ++c_line;
-        if (c_line == s_lines) 
-        {
+        if (c_line == s_lines) {
             s_lines += 10;
             lines = realloc(lines, sizeof(char *) * s_lines);
         }
