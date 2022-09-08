@@ -49,10 +49,10 @@ extern int open_source_list(struct source_list *sl_dst, const char *sl_path);
 /**
  * Creates a new source list with the informations describes in sl_src.
  *
- * @param sl_src The source list to make.
+ * @param sl_path The source list to make.
  * @return 0 on success or -1 on error.
  */
-extern int ct_source_list(const struct source_list *sl_src);
+extern int ct_source_list(const char *sl_name);
 
 
 /**
@@ -61,36 +61,36 @@ extern int ct_source_list(const struct source_list *sl_src);
  * @param sl_path The path to the source list to be removed.
  * @return 0 on success or -1 on error.
  */
-extern int rm_source_list(const char *sl_path);
+extern int rm_source_list(const char *sl_name);
 
 
 /**
  * Add a new source in an existing source list.
  *
- * @param sl_dst The source list to add the source.
+ * @param sl_src The source list to add the source.
  * @param s The source to add.
  * @return 0 on success or -1 on error.
  */
-extern int add_source(struct source_list *sl_dst, const struct source s);
+extern int add_source(struct source_list *sl_src, const struct source s);
 
 /**
  * Rmoeve a source from an existing source list.
  *
- * @param sl_dst The source list to change.
+ * @param sl_src The source list to change.
  * @param s_num The number of line that describes the source to be removed.
  * @return 0 on success or -1 on error.
  */
-extern int rm_source(struct source_list *sl_dst, int s_num);
+extern int rm_source(struct source_list *sl_src, int s_num);
 
 
 /**
  * Comments a source from an existing source list.
  *
- * @param sl_dst The source list to change.
+ * @param sl_src The source list to change.
  * @param s_num The source to commemet. Based on line number.
  * @return 0 on success or -1 on error.
  */
-extern int cm_source(struct source_list *sl_dst, int s_num);
+extern int cm_source(struct source_list *sl_src, int s_num);
 
 
 #endif

@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
         /**
          * Display all the sources of one source file.
          * Default action, reads the /etc/apt/sources.list
-         * Otherwise reads from the argument argv[1].
+         * Otherwise reads from the argument argv[2].
          */
         if (argv[2] == NULL) {
             if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
