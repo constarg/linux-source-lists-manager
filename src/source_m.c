@@ -8,42 +8,44 @@
 static struct source *retrieve_sources(const char *sl_content, size_t *size)
 {
     struct source *s_tmp = NULL;
-    size_t sources_s = 10;
-    size_t lines_s = 0;
-    char **lines = retv_file_lines(sl_content, &lines_s);
+    size_t s_sources = 10;
+    size_t s_lines = 0;
+    char **lines = retv_file_lines(sl_content, &s_lines);
 
     // no lines has been found.
     if (lines == NULL) return NULL;
 
     // allocate space for sources.
     s_tmp = (struct source *) 
-            malloc(sizeof(struct source) * sources_s);
+            malloc(sizeof(struct source) * s_sources);
 
     int s_curr = 0;
-    for (int l = 0; l < lines_s; l++)
+    for (int l = 0; l < s_lines; l++)
     {
         // if line start with #. It's a commnet.
-        if (lines[l][0] != '#')
+        if (lines[l][0] != '#' && lines[l][0] != '\0'
+            && lines[l][0] != ' ' && lines[l][0] != '\n')
         {
-            (s_tmp + s_curr)->s_content = malloc(sizeof(char) * 
-                                                   strlen(lines[l]) + 1);
-            if ((s_tmp + s_curr)->s_content == NULL) return NULL;
-            strcpy((s_tmp + s_curr++)->s_content, lines[l]);
+            s_tmp[s_curr].s_content = (char *) malloc(sizeof(char) * 
+                                                      strlen(lines[l]) + 1);
+            if (s_tmp[s_curr].s_content == NULL) return NULL;
+            strcpy(s_tmp[s_curr].s_content, lines[l]);
 
-            if (s_curr == sources_s)
+            if (s_curr == s_sources)
             {
-                sources_s += 10;
-                s_tmp = realloc(s_tmp, sizeof(struct source) * 
-                                              sources_s);
+                s_sources += 10;
+                s_tmp = (struct source *) realloc(s_tmp, sizeof(struct source) * 
+                                                  s_sources);
                 if (s_tmp == NULL) return NULL;
             }
+            ++s_curr;
         }
-        free(lines[l]);
     }
     
+    *size = s_curr;
+    free_file_lines(lines, s_lines);
 
-    free(lines);
-    return realloc(s_tmp, sizeof(struct source) * s_curr);
+    return realloc(s_tmp, sizeof(struct source) * (s_curr));
 }
 
 static inline char *retv_sl_name(const char *sl_path)
@@ -60,8 +62,8 @@ static inline char *retv_sl_name(const char *sl_path)
 
 int open_source_list(struct source_list *sl_dst, const char *sl_path)
 {
-    size_t sources_s = 0;
-    struct source *sources = retrieve_sources(sl_path, &sources_s);
+    size_t s_sources = 0;
+    struct source *sources = retrieve_sources(sl_path, &s_sources);
     char *sl_name = retv_sl_name(sl_path);
     if (sources == NULL) return -1;
 
@@ -70,7 +72,7 @@ int open_source_list(struct source_list *sl_dst, const char *sl_path)
     
     sl_dst->sl_name       = sl_name;
     sl_dst->sl_loc        = (char *) sl_path;
-    sl_dst->sl_sources_s  = sources_s;
+    sl_dst->sl_s_sources  = s_sources;
     sl_dst->sl_sources    = sources;
 
     return 0;

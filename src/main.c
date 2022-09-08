@@ -59,6 +59,13 @@ int main(int argc, char *argv[])
                 // TODO - given location.
             }
         }
+    } else if (!strcmp(argv[1], "--comment-source"))
+    {
+        if (argv[2] == NULL) return 0; // TODO - error.
+        else 
+        {
+            // TODO - comment the source in the specific line.
+        }
     } else if (!strcmp(argv[1], "--search-source"))
     {
         if (argv[2] == NULL) return 0; // TODO - error.
@@ -96,6 +103,12 @@ int main(int argc, char *argv[])
     }
 
     open_source_list(&test, "/etc/apt/sources.list");
+
+
+    for (int i = 0; i < test.sl_s_sources; i++)
+    {
+        printf("%s\n", test.sl_sources[i].s_content);
+    }
 
     close_source_list(&test);
 }
