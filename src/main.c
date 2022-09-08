@@ -1,16 +1,31 @@
+#ifdef linux
+
 #include "io_m.h"
 #include "source_m.h"
+#include "config.h"
 
 #include <stdio.h>
 #include <string.h>
 
+#else
+
+#include <stdio.h>
+
+#endif
+
+
 int main(int argc, char *argv[])
 {
+#ifdef linux
     struct source_list test;
     init_sl(&test);
 
     if (argv[0] == NULL) return -1;
-    if (argv[1] == NULL) return -1; // TODO - print help message.
+    if (argv[1] == NULL)
+    {
+        printf(HELP_MSG);
+        return 0;
+    }
     if (!strcmp(argv[1], "--show-sources"))
     {
         if (argv[2] == NULL) 
@@ -105,10 +120,9 @@ int main(int argc, char *argv[])
     open_source_list(&test, "/etc/apt/sources.list");
 
 
-    for (int i = 0; i < test.sl_s_sources; i++)
-    {
-        printf("%s\n", test.sl_sources[i].s_content);
-    }
-
     close_source_list(&test);
+
+#else
+    printf("The oparating system is not currently supported.");
+#endif
 }

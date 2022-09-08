@@ -45,7 +45,7 @@ static struct source *retrieve_sources(const char *sl_content, size_t *size)
     *size = s_curr;
     free_file_lines(lines, s_lines);
 
-    return realloc(s_tmp, sizeof(struct source) * (s_curr));
+    return (struct source *) realloc(s_tmp, sizeof(struct source) * (s_curr));
 }
 
 static inline char *retv_sl_name(const char *sl_path)
