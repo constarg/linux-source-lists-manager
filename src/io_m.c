@@ -58,7 +58,7 @@ sl_dir open_source_files_d()
     return (char **) realloc(files, sizeof(char *) * (index + 1)); // reduce the memory to the absolute size of the array.
 }
 
-int append_line(char *line, const char *path)
+int append_line(const char *line, const char *path)
 {
     int fd = open(path, O_APPEND);
     if (fd == -1) return -1;
@@ -104,6 +104,12 @@ static int get_line(char **dst, int fd)
     if (lseek(fd, dist, SEEK_SET) == -1) return -1;
     if (dist == end) return -1;
     return 0;
+}
+
+
+int remove_line(int fd, const char *line) 
+{
+
 }
 
 char **retv_file_lines(const char *path, size_t *sr_lines)

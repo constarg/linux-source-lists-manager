@@ -140,6 +140,6 @@ int main(int argc, char *argv[])
     }
 
 #else
-    printf("The oparating system is not currently supported.");
+    printf("The oparating system is not supported.");
 #endif
 }
