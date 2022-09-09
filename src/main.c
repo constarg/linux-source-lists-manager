@@ -96,16 +96,6 @@ int main(int argc, char *argv[])
             // TODO - uncomment the source in the specific line.
         }
 
-    } else if (!strcmp(argv[1], "--search-source")) {
-        if (argv[2] == NULL) return 0; // TODO - error.
-        else {
-            // TODO - add the source in argv[2] to the source list to source list if no other location has been given, otherwise to given location.
-            if (argv[3] == NULL) {
-                // TODO - default
-            } else {
-                // TODO - given location.
-            }
-        }
     } else if (!strcmp(argv[1], "--show-source-lists")) {
         /**
          * Display all the source lists that

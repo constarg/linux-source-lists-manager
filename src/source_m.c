@@ -174,8 +174,7 @@ int cm_source(struct source_list *sl_src, int s_num)
     if (s_num > sl_src->sl_s_sources) return -1;
 
     char *old = sl_src->sl_sources[s_num].s_content;
-    char *new = (char *) malloc(sizeof(char) * 
-                                strlen(old) + 2);
+    char *new = (char *) malloc(sizeof(char) * strlen(old) + 2);
 
     strcpy(new, "#"); // add the comment symbol.
     strcat(new, old);
@@ -196,19 +195,18 @@ int cm_source(struct source_list *sl_src, int s_num)
 int ucm_source(struct source_list *sl_src, int s_num)
 {
     if (geteuid() != 0) return ACCESS_DENIED;
-    if (s_num > sl_src->sl_s_sources) return -1;
+    if (s_num > sl_src->sl_s_comments) return -1;
 
-    char *old = sl_src->sl_sources[s_num].s_content;
-    char *new = (char *) malloc(sizeof(char) * 
-                                strlen(old));
+    char *old = sl_src->sl_comments[s_num].s_content;
+    char *new = (char *) malloc(sizeof(char) * strlen(old));
 
     strcpy(new, (++old));
 
     // replace.
-    sl_src->sl_sources[s_num].s_content = new;
+    sl_src->sl_comments[s_num].s_content = new;
     free(old);
 
     // make the chagnes absolute.
-    save_changes(sl_src->sl_sources, sl_src->sl_s_sources);
+    save_changes(sl_src->sl_comments, sl_src->sl_s_comments);
     return 0;
 }
