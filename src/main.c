@@ -45,6 +45,26 @@ int main(int argc, char *argv[])
         }
 
         close_source_list(&list);
+    } else if (!strcmp(argv[1], "--show-comments")) {
+        /**
+         * Display all the comments of one source file.
+         * Default action, reads the /etc/apt/sources.list
+         * Otherwise reads from the argument argv[2].
+         */
+        if (argv[2] == NULL) {
+            if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
+        } else {
+            if (open_source_list(&list, argv[2]) == -1) return -1; // TODO - error and check if the given source is in source.d directory.
+        } 
+        // Display the sources.
+        printf("[*] ---- Comments ---- [*]\n\n");
+        for (int i = 0; 
+             i < list.sl_s_comments; i++) {
+            printf("[%d] -> %s\n", i, list.sl_comments[i].s_content);
+        }
+
+        close_source_list(&list);
+
     } else if (!strcmp(argv[1], "--add-source")) {
         if (argv[2] == NULL) return 0; // TODO - error.
         else {

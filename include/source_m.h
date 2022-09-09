@@ -6,17 +6,21 @@
 
 #include "io_m.h"
 
+#define ACCESS_DENIED -0x2
+
 struct source 
 {
-    char *s_content;             // The content of a source ( url ).
+    char *s_content;              // The content of a source ( url ).
 };
 
 struct source_list
 {
-    char *sl_name;               // The source list name.
-    char *sl_loc;                // The source list location.
-    size_t sl_s_sources;         // The sources number.
-    struct source *sl_sources;   // The source list sources.
+    char *sl_name;                // The source list name.
+    char *sl_loc;                 // The source list location.
+    size_t sl_s_sources;          // The sources number.
+    size_t sl_s_comments;         // The comments number.
+    struct source *sl_sources;    // The source list sources.
+    struct source *sl_comments;   // The comments of source list.
 };
 
 
@@ -35,7 +39,13 @@ static inline void close_source_list(struct source_list *sl_src)
          s < sl_src->sl_s_sources; s++) {
         free(sl_src->sl_sources[s].s_content);
     }
+
+    for (int c = 0;
+         c < sl_src->sl_s_comments; c++) {
+        free(sl_src->sl_comments[c].s_content);
+    }
     free(sl_src->sl_sources);
+    free(sl_src->sl_comments);
 }
 
 

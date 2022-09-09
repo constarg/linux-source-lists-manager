@@ -8,44 +8,72 @@
 #include "config.h"
 
 
-static struct source *retrieve_sources(const char *sl_content, size_t *size)
+static struct source **parse_contents(const char *sl_content, size_t *s_size,
+                                     size_t *c_size)
 {
     struct source *s_tmp = NULL;
+    struct source *c_tmp = NULL;
+    struct source **contents;
     size_t s_sources = 10;
+    size_t s_comments = 10;
     size_t s_lines = 0;
     char **lines = retv_file_lines(sl_content, &s_lines);
 
     // no lines has been found.
     if (lines == NULL) return NULL;
 
+    contents = (struct source **)
+                malloc(sizeof(struct source *) * 2);
+
     // allocate space for sources.
     s_tmp = (struct source *) 
             malloc(sizeof(struct source) * s_sources);
 
+    // allocate space for comments.
+    c_tmp = (struct source *)
+            malloc(sizeof(struct source) * s_comments);
+
     int s_curr = 0;
+    int c_curr = 0;
     for (int l = 0; l < s_lines; l++) {
-        // if line start with #. It's a commnet.
-        if (lines[l][0] != '#' && lines[l][0] != '\0'
-            && lines[l][0] != ' ' && lines[l][0] != '\n') {
+        // TODO - maybe cleanup a little this for.
+        if (lines[l][0] == '#') {
+            c_tmp[c_curr].s_content = (char *) malloc(sizeof(char) *
+                                                      strlen(lines[l]) + 1);
+            if (c_tmp[c_curr].s_content == NULL) return NULL;
+            strcpy(c_tmp[c_curr].s_content, lines[l]);
+
+            ++c_curr;
+            if (c_curr == s_comments) {
+                s_comments += 10;
+                c_tmp = (struct source *) realloc(c_tmp, sizeof(struct source) *
+                                                  s_comments);
+                if (c_tmp == NULL) return NULL;
+            }
+        } else if (lines[l][0] != '\0' && lines[l][0] != ' ' 
+            && lines[l][0] != '\n') {
             s_tmp[s_curr].s_content = (char *) malloc(sizeof(char) * 
                                                       strlen(lines[l]) + 1);
             if (s_tmp[s_curr].s_content == NULL) return NULL;
             strcpy(s_tmp[s_curr].s_content, lines[l]);
 
+            ++s_curr;
             if (s_curr == s_sources) {
                 s_sources += 10;
                 s_tmp = (struct source *) realloc(s_tmp, sizeof(struct source) * 
                                                   s_sources);
                 if (s_tmp == NULL) return NULL;
             }
-            ++s_curr;
         }
     }
     
-    *size = s_curr;
+    *s_size = s_curr;
+    *c_size = c_curr;
     free_file_lines(lines, s_lines);
-
-    return (struct source *) realloc(s_tmp, sizeof(struct source) * (s_curr));
+ 
+    contents[0] = (struct source *) realloc(s_tmp, sizeof(struct source) * (s_curr));
+    contents[1] = (struct source *) realloc(c_tmp, sizeof(struct source) * (c_curr));
+    return contents;
 }
 
 static inline char *retv_sl_name(const char *sl_path)
@@ -61,21 +89,27 @@ static inline char *retv_sl_name(const char *sl_path)
 
 int open_source_list(struct source_list *sl_dst, const char *sl_path)
 {
-    size_t s_sources = 0;
-    struct source *sources = retrieve_sources(sl_path, &s_sources);
+    size_t s_sources  = 0;
+    size_t s_comments = 0;
+    struct source **contents = parse_contents(sl_path, &s_sources,
+                                             &s_comments);
     char *sl_name = retv_sl_name(sl_path);
-    if (sources == NULL) return -1;
+    if (contents == NULL) return -1;
 
     sl_dst->sl_name       = sl_name;
     sl_dst->sl_loc        = (char *) sl_path;
     sl_dst->sl_s_sources  = s_sources;
-    sl_dst->sl_sources    = sources;
+    sl_dst->sl_s_comments = s_comments;
+    sl_dst->sl_sources    = contents[0];
+    sl_dst->sl_comments   = contents[1];
 
+    free(contents);
     return 0;
 }
 
 int ct_source_list(const char *sl_name)
 {
+    // TODO - check if the use is root.
     char *sl_path = (char *) malloc(sizeof(char) *
                                     strlen(SOURCE_LIST_D) +
                                     strlen(sl_name) + 1);
@@ -94,6 +128,7 @@ int ct_source_list(const char *sl_name)
 
 int rm_source_list(const char *sl_name)
 {
+    // TODO - check if the user is root.
     char *sl_path = (char *) malloc(sizeof(char) *
                                     strlen(SOURCE_LIST_D) +
                                     strlen(sl_name) + 1);
@@ -108,6 +143,7 @@ int rm_source_list(const char *sl_name)
 
 int rm_source(struct source_list *sl_src, int s_num)
 {
+    // TODO - check if the user is root.
     if (s_num > sl_src->sl_s_sources) return -1; // No source exists.
 
     char *rmvd = sl_src->sl_sources[s_num].s_content; // removed source.
