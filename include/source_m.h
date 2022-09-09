@@ -107,5 +107,13 @@ extern int rm_source(struct source_list *sl_src, int s_num);
  */
 extern int cm_source(struct source_list *sl_src, int s_num);
 
+/**
+ * uncomments a source from an existing source list.
+ *
+ * @param sl_src The source list to change.
+ * @param s_num The source to uncomment. Based on line number.
+ * @return 0 on success or -1 on error.
+ */
+extern int ucm_source(struct source_list *sl_src, int s_num);
 
 #endif

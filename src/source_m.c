@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "source_m.h"
 #include "config.h"
@@ -109,7 +110,7 @@ int open_source_list(struct source_list *sl_dst, const char *sl_path)
 
 int ct_source_list(const char *sl_name)
 {
-    // TODO - check if the use is root.
+    if (geteuid() != 0) return ACCESS_DENIED;
     char *sl_path = (char *) malloc(sizeof(char) *
                                     strlen(SOURCE_LIST_D) +
                                     strlen(sl_name) + 1);
@@ -128,7 +129,7 @@ int ct_source_list(const char *sl_name)
 
 int rm_source_list(const char *sl_name)
 {
-    // TODO - check if the user is root.
+    if (geteuid() != 0) return ACCESS_DENIED;
     char *sl_path = (char *) malloc(sizeof(char) *
                                     strlen(SOURCE_LIST_D) +
                                     strlen(sl_name) + 1);
@@ -141,9 +142,17 @@ int rm_source_list(const char *sl_name)
     return 0;
 }
 
+static void save_changes(const struct source *contents,
+                         size_t size)
+{
+    // TODO - keep a backup.
+    // TODO - save each line in a new file.
+    // TODO - move the file with the changes in the right location.
+}
+
 int rm_source(struct source_list *sl_src, int s_num)
 {
-    // TODO - check if the user is root.
+    if (geteuid() != 0) return ACCESS_DENIED;
     if (s_num > sl_src->sl_s_sources) return -1; // No source exists.
 
     char *rmvd = sl_src->sl_sources[s_num].s_content; // removed source.
@@ -155,12 +164,51 @@ int rm_source(struct source_list *sl_src, int s_num)
     --sl_src->sl_s_sources;
     free(rmvd);
 
-    // TODO - get the commented section of the source file.
-
+    save_changes(sl_src->sl_sources, sl_src->sl_s_sources);
     return 0;
 }
 
 int cm_source(struct source_list *sl_src, int s_num)
 {
+    if (geteuid() != 0) return ACCESS_DENIED;
+    if (s_num > sl_src->sl_s_sources) return -1;
+
+    char *old = sl_src->sl_sources[s_num].s_content;
+    char *new = (char *) malloc(sizeof(char) * 
+                                strlen(old) + 2);
+
+    strcpy(new, "#"); // add the comment symbol.
+    strcat(new, old);
+
+    // replace.
+    sl_src->sl_sources[s_num].s_content = new;
+    free(old);
+
+    /*for (int i = 0; i < sl_src->sl_s_sources; i++)
+    {
+        printf("%s\n", sl_src->sl_sources[i].s_content);
+    }*/
+    // make the chagnes absolute.
+    save_changes(sl_src->sl_sources, sl_src->sl_s_sources);
+    return 0;
+}
+
+int ucm_source(struct source_list *sl_src, int s_num)
+{
+    if (geteuid() != 0) return ACCESS_DENIED;
+    if (s_num > sl_src->sl_s_sources) return -1;
+
+    char *old = sl_src->sl_sources[s_num].s_content;
+    char *new = (char *) malloc(sizeof(char) * 
+                                strlen(old));
+
+    strcpy(new, (++old));
+
+    // replace.
+    sl_src->sl_sources[s_num].s_content = new;
+    free(old);
+
+    // make the chagnes absolute.
+    save_changes(sl_src->sl_sources, sl_src->sl_s_sources);
     return 0;
 }
