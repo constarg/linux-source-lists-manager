@@ -90,6 +90,12 @@ int main(int argc, char *argv[])
         else {
             // TODO - comment the source in the specific line.
         }
+    } else if (!strcmp(argv[1], "--uncomment-source")) {
+        if (argv[2] == NULL) return 0; // TODO - error.
+        else {
+            // TODO - uncomment the source in the specific line.
+        }
+
     } else if (!strcmp(argv[1], "--search-source")) {
         if (argv[2] == NULL) return 0; // TODO - error.
         else {
@@ -127,6 +133,8 @@ int main(int argc, char *argv[])
             // TODO - remove the source file.
             // TODO - CAUTION do not allow to remove the /etc/apt/source.list for any reason, or at least give warning message.
         }
+    } else if (!strcmp(argv[1], "--undo")) {
+        // TODO - undo the previous action, using an temporary backup.
     } else {
         printf(HELP_MSG);
     }
