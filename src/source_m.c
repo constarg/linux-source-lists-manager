@@ -142,16 +142,37 @@ int rm_source_list(const char *sl_name)
     return 0;
 }
 
-static void save_changes(const struct source *contents,
+static void save_changes(const struct source_list *sl_src,
                          size_t size)
 {
+
     // TODO - keep a backup.
     // TODO - save each line in a new file.
     // TODO - move the file with the changes in the right location.
+
+    // TODO - need test.
+    int fd = open(sl_src->sl_loc, O_TRUNC); // clear the previous contents.
+    close(fd);
+
+    // rewrite the file.
+    // rewrite sources.
+    // TODO - make a more efficient method. Do not use append, make another function.
+    // problem: with the use of append_line function i use to many times the open() sys call.
+    // Make a function that takes an array and appened it in a file in one open() call.
+    for (int s = 0; s < sl_src->sl_s_sources;
+         s++) {
+        append_line(sl_src->sl_sources[s].s_content, sl_src->sl_loc);
+    }
+    // rewrite comment.
+    for (int c = 0; c < sl_src->sl_s_comments;
+         c++) {
+        append_line(sl_src->sl_comments[c].s_content, sl_src->sl_loc);
+    }
 }
 
 int rm_source(struct source_list *sl_src, int s_num)
 {
+    // TODO - need test.
     if (geteuid() != 0) return ACCESS_DENIED;
     if (s_num > sl_src->sl_s_sources) return -1; // No source exists.
 
@@ -164,12 +185,13 @@ int rm_source(struct source_list *sl_src, int s_num)
     --sl_src->sl_s_sources;
     free(rmvd);
 
-    save_changes(sl_src->sl_sources, sl_src->sl_s_sources);
+    save_changes(sl_src, sl_src->sl_s_sources);
     return 0;
 }
 
 int cm_source(struct source_list *sl_src, int s_num)
 {
+    // TODO - need test.
     if (geteuid() != 0) return ACCESS_DENIED;
     if (s_num > sl_src->sl_s_sources) return -1;
 
@@ -188,12 +210,13 @@ int cm_source(struct source_list *sl_src, int s_num)
         printf("%s\n", sl_src->sl_sources[i].s_content);
     }*/
     // make the chagnes absolute.
-    save_changes(sl_src->sl_sources, sl_src->sl_s_sources);
+    save_changes(sl_src, sl_src->sl_s_sources);
     return 0;
 }
 
 int ucm_source(struct source_list *sl_src, int s_num)
 {
+    // TODO - need test.
     if (geteuid() != 0) return ACCESS_DENIED;
     if (s_num > sl_src->sl_s_comments) return -1;
 
@@ -207,6 +230,6 @@ int ucm_source(struct source_list *sl_src, int s_num)
     free(old);
 
     // make the chagnes absolute.
-    save_changes(sl_src->sl_comments, sl_src->sl_s_comments);
+    save_changes(sl_src, sl_src->sl_s_comments);
     return 0;
 }
