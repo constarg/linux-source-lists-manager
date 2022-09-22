@@ -106,12 +106,6 @@ static int get_line(char **dst, int fd)
     return 0;
 }
 
-
-int remove_line(int fd, const char *line) 
-{
-
-}
-
 char **retv_file_lines(const char *path, size_t *sr_lines)
 {
     size_t s_lines = 10;
