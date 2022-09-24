@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #else
 
@@ -35,6 +36,7 @@ int main(int argc, char *argv[])
         if (argv[2] == NULL) {
             if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
         } else {
+            if (strstr(argv[2], SOURCE_LIST_D)) return -1;
             if (open_source_list(&list, argv[2]) == -1) return -1; // TODO - error and check if the given source is in source.d directory.
         } 
         // Display the sources.
@@ -54,6 +56,7 @@ int main(int argc, char *argv[])
         if (argv[2] == NULL) {
             if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
         } else {
+            if (strstr(argv[2], SOURCE_LIST_D)) return -1;
             if (open_source_list(&list, argv[2]) == -1) return -1; // TODO - error and check if the given source is in source.d directory.
         } 
         // Display the sources.
@@ -65,13 +68,14 @@ int main(int argc, char *argv[])
 
         close_source_list(&list);
 
-    } else if (!strcmp(argv[1], "--add-source")) {
+    } else if (!strcmp(argv[1], "--add-source")) {        
         if (argv[2] == NULL) return 0; // TODO - error.
         else {
             // TODO - add the source in argv[2] to the source list to source list if no other location has been given, otherwise to given location.
             if (argv[3] == NULL) {
                 // TODO - default
             } else {
+                //if (strstr(argv[2], SOURCE_LIST_D)) return -1; TODO - uncomment.
                 // TODO - given location.
             }
         }
@@ -82,6 +86,7 @@ int main(int argc, char *argv[])
             if (argv[3] == NULL) {
                 // TODO - default
             } else {
+                //if (strstr(argv[2], SOURCE_LIST_D)) return -1; TODO - uncomment.
                 // TODO - given location.
             }
         }

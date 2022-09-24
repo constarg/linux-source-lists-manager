@@ -60,7 +60,7 @@ sl_dir open_source_files_d()
 
 int append_line(const char *line, const char *path)
 {
-    int fd = open(path, O_APPEND);
+    int fd = open(path, O_WRONLY | O_APPEND);
     if (fd == -1) return -1;
 
     if (write(fd, line, strlen(line)) == -1) return -1;
@@ -79,15 +79,21 @@ static int get_line(char **dst, int fd)
 
     off_t dist;
     off_t end;
+    off_t curr;
 
-    while (buff != '\n' && buff != '\0') 
+    end  = lseek(fd, 0, SEEK_END);
+    curr = lseek(fd, begin, SEEK_SET); 
+    if (end == -1 || curr == -1) return -1;
+
+    while (buff != '\n' && curr != end) 
     {
+        curr = lseek(fd, 0, SEEK_CUR);
+        if (curr == -1) return -1;
         if (read(fd, &buff, 1) == -1) return -1;
     }
-
+    
     dist = lseek(fd, 0, SEEK_CUR);
-    end  = lseek(fd, 0, SEEK_END);
-    if (dist == -1 || end == -1) return -1;
+    if (dist == -1) return -1;
 
     size = (dist - begin);
     if (lseek(fd, begin, SEEK_SET) == -1) return -1;
