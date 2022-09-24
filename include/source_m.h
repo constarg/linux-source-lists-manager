@@ -86,6 +86,7 @@ extern int rm_source_list(const char *sl_name);
 static inline int add_source(const struct source_list *sl_src, 
                              const struct source s)
 {
+    // TODO - require root access.
     return append_line(s.s_content, sl_src->sl_loc);
 }
 
