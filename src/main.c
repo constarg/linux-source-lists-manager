@@ -65,20 +65,40 @@ int main(int argc, char *argv[])
              i < list.sl_s_comments; i++) {
             printf("[%d] -> %s\n", i, list.sl_comments[i].s_content);
         }
-
         close_source_list(&list);
 
-    } else if (!strcmp(argv[1], "--add-source")) {        
+    } else if (!strcmp(argv[1], "--add-source")) {
+        /**
+         * Add a new source in a specific source file.
+         * Default action, add the given source in /etc/apt/sources.list
+         * Otherwise add the new source in the given path.
+         */
+        struct source new_source;
         if (argv[2] == NULL) return 0; // TODO - error.
         else {
-            // TODO - add the source in argv[2] to the source list to source list if no other location has been given, otherwise to given location.
             if (argv[3] == NULL) {
-                // TODO - default
+                if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
+                new_source.s_content = (char *) malloc(sizeof(char) *
+                                                       strlen(argv[2]) + 2);
+                if (new_source.s_content == NULL) return -1;
+
+                strcpy(new_source.s_content, argv[2]);
             } else {
-                //if (strstr(argv[2], SOURCE_LIST_D)) return -1; TODO - uncomment.
-                // TODO - given location.
+                if (strstr(argv[2], SOURCE_LIST_D)) return -1;
+                if (open_source_list(&list, argv[3]) == -1) return -1;
+                new_source.s_content = (char *) malloc(sizeof(char) *
+                                                       strlen(argv[3]) + 2);
+                if (new_source.s_content == NULL) return -1;
+
+                strcpy(new_source.s_content, argv[3]);
             }
         }
+        strcat(new_source.s_content, "\n"); // ensure that the new source let one or more lines.
+        add_source(&list, new_source);
+
+        free(new_source.s_content);
+        close_source_list(&list);
+    
     } else if (!strcmp(argv[1], "--remove-source")) {
         if (argv[2] == NULL) return 0; // TODO - error.
         else {
