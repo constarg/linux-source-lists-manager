@@ -162,11 +162,13 @@ static void save_changes(const struct source_list *sl_src,
     for (int s = 0; s < sl_src->sl_s_sources;
          s++) {
         append_line(sl_src->sl_sources[s].s_content, sl_src->sl_loc);
+        append_line("\n", sl_src->sl_loc);
     }
     // rewrite comment.
     for (int c = 0; c < sl_src->sl_s_comments;
          c++) {
         append_line(sl_src->sl_comments[c].s_content, sl_src->sl_loc);
+        append_line("\n", sl_src->sl_loc);
     }
 }
 
