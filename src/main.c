@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
         if (argv[2] == NULL) {
             if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
         } else {
-            if (strstr(argv[2], SOURCE_LIST_D)) return -1;
+            if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
             if (open_source_list(&list, argv[2]) == -1) return -1; // TODO - error and check if the given source is in source.d directory.
         } 
         // Display the sources.
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
         if (argv[2] == NULL) {
             if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
         } else {
-            if (strstr(argv[2], SOURCE_LIST_D)) return -1;
+            if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
             if (open_source_list(&list, argv[2]) == -1) return -1; // TODO - error and check if the given source is in source.d directory.
         } 
         // Display the sources.
@@ -84,8 +84,8 @@ int main(int argc, char *argv[])
 
                 strcpy(new_source.s_content, argv[2]);
             } else {
-                if (strstr(argv[2], SOURCE_LIST_D)) return -1;
-                if (open_source_list(&list, argv[3]) == -1) return -1;
+                if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
+                if (open_source_list(&list, argv[2]) == -1) return -1;
                 new_source.s_content = (char *) malloc(sizeof(char) *
                                                        strlen(argv[3]) + 2);
                 if (new_source.s_content == NULL) return -1;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
             }
         }
         strcat(new_source.s_content, "\n"); // ensure that the new source let one or more lines.
-        add_source(&list, new_source);
+        if (add_source(&list, new_source) == -1) return -1;
 
         free(new_source.s_content);
         close_source_list(&list);
@@ -102,13 +102,20 @@ int main(int argc, char *argv[])
     } else if (!strcmp(argv[1], "--remove-source")) {
         if (argv[2] == NULL) return 0; // TODO - error.
         else {
-            // TODO - add the source in argv[2] to the source list to source list if no other location has been given, otherwise to given location.
+            int num = 0;
+            errno = 0;
             if (argv[3] == NULL) {
-                // TODO - default
+                if (open_source_list(&list, SOURCE_LIST) == -1) return -1;
+                num = atoi(argv[2]);
             } else {
-                //if (strstr(argv[2], SOURCE_LIST_D)) return -1; TODO - uncomment.
-                // TODO - given location.
+                if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
+                if (open_source_list(&list, argv[2]) == -1) return -1;
+                num = atoi(argv[3]);
             }
+            if (errno != 0) return -1;
+
+            if (rm_source(&list, num) == -1) return -1;
+            close_source_list(&list);
         }
     } else if (!strcmp(argv[1], "--comment-source")) {
         if (argv[2] == NULL) return 0; // TODO - error.
