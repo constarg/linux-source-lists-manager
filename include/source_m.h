@@ -83,7 +83,8 @@ extern int rm_source_list(const char *sl_name);
  * @param s The source to add.
  * @return 0 on success or -1 on error.
  */
-static inline int add_source(struct source_list *sl_src, const struct source s)
+static inline int add_source(const struct source_list *sl_src, 
+                             const struct source s)
 {
     return append_line(s.s_content, sl_src->sl_loc);
 }
