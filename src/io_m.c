@@ -119,6 +119,7 @@ char **retv_file_lines(const char *path, size_t *sr_lines)
     if (lines == NULL) return NULL;
 
     int fd = open(path, O_RDONLY);
+    if (fd == -1) return NULL;
 
     int c_line = 0;
     // get lines.

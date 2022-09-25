@@ -173,7 +173,6 @@ static void save_changes(const struct source_list *sl_src,
 
 int rm_source(struct source_list *sl_src, int s_num)
 {
-    // TODO - need test.
     if (geteuid() != 0) return ACCESS_DENIED;
     if (s_num > sl_src->sl_s_sources) return -1; // No source exists.
 
@@ -217,14 +216,13 @@ int cm_source(struct source_list *sl_src, int s_num)
 
 int ucm_source(struct source_list *sl_src, int s_num)
 {
-    // TODO - need test.
     if (geteuid() != 0) return ACCESS_DENIED;
     if (s_num > sl_src->sl_s_comments) return -1;
 
     char *old = sl_src->sl_comments[s_num].s_content;
     char *new = (char *) malloc(sizeof(char) * strlen(old));
 
-    strcpy(new, (++old));
+    strcpy(new, (old + 1));
 
     // replace.
     sl_src->sl_comments[s_num].s_content = new;

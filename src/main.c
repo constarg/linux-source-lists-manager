@@ -94,12 +94,21 @@ int main(int argc, char *argv[])
             }
         }
         strcat(new_source.s_content, "\n"); // ensure that the new source let one or more lines.
-        if (add_source(&list, new_source) == -1) return -1;
+
+        int err = add_source(&list, new_source);
+        if (err == ACCESS_DENIED) printf("[*] This action require root access.");
+        else if (err == -1) return -1;
 
         free(new_source.s_content);
         close_source_list(&list);
     
     } else if (!strcmp(argv[1], "--remove-source")) {
+        /**
+         * Remove a source from a specific source file.
+         * Default action, remove the source in the specific number in /etc/apt/sources.list
+         * Otherwise remove the the source in given path.
+         */
+
         if (argv[2] == NULL) return 0; // TODO - error.
         else {
             int num = 0;
@@ -114,20 +123,61 @@ int main(int argc, char *argv[])
             }
             if (errno != 0) return -1;
 
-            if (rm_source(&list, num) == -1) return -1;
+            int err = rm_source(&list, num);
+            if (err == ACCESS_DENIED) printf("[*] This action require root access.");
+            else if (err == -1) return -1;
             close_source_list(&list);
         }
     } else if (!strcmp(argv[1], "--comment-source")) {
+        /**
+         * comment a source from a specific source file.
+         * Default action, comment the source in the specific number in /etc/apt/sources.list
+         * Otherwise comment the the source in given path.
+         */
         if (argv[2] == NULL) return 0; // TODO - error.
         else {
-            // TODO - comment the source in the specific line.
+            int num = 0;
+            errno = 0;
+            if (argv[3] == NULL) {
+                if (open_source_list(&list, SOURCE_LIST) == -1) return -1;
+                num = atoi(argv[2]);
+            } else {
+                if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
+                if (open_source_list(&list, argv[2]) == -1) return -1;
+                num = atoi(argv[3]);
+            }
+            if (errno != 0) return -1;
+
+            int err = cm_source(&list, num);
+            if (err == ACCESS_DENIED) printf("[*] This action require root access.");
+            else if (err == -1) return -1;
+            close_source_list(&list);
         }
     } else if (!strcmp(argv[1], "--uncomment-source")) {
+        /**
+         * uncomment a source from a specific source file.
+         * Default action, uncomment the source in the specific number in /etc/apt/sources.list
+         * Otherwise uncomment the the source in given path.
+         */
         if (argv[2] == NULL) return 0; // TODO - error.
         else {
-            // TODO - uncomment the source in the specific line.
-        }
+            int num = 0;
+            errno = 0;
+            if (argv[3] == NULL) {
+                if (open_source_list(&list, SOURCE_LIST) == -1) return -1;
+                num = atoi(argv[2]);
+            } else {
+                if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
+                if (open_source_list(&list, argv[2]) == -1) return -1;
+                num = atoi(argv[3]);
+            }
+            if (errno != 0) return -1;
 
+            int err = ucm_source(&list, num);
+            if (err == ACCESS_DENIED) printf("[*] This action require root access.");
+            else if (err == -1) return -1;
+            close_source_list(&list);
+        }
     } else if (!strcmp(argv[1], "--show-source-lists")) {
         /**
          * Display all the source lists that
