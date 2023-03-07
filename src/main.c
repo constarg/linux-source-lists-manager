@@ -33,11 +33,11 @@ int main(int argc, char *argv[])
          * Default action, reads the /etc/apt/sources.list
          * Otherwise reads from the argument argv[2].
          */
-        if (argv[2] == NULL) {
-            if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
+        if (NULL == argv[2]) {
+            if (-1 == open_source_list(&list, SOURCE_LIST)) return -1; // TODO - error.
         } else {
-            if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
-            if (open_source_list(&list, argv[2]) == -1) return -1; // TODO - error and check if the given source is in source.d directory.
+            if (NULL == strstr(argv[2], SOURCE_LIST_D)) return -1;
+            if (-1 ==open_source_list(&list, argv[2])) return -1; // TODO - error and check if the given source is in source.d directory.
         } 
         // Display the sources.
         printf("[*] ---- Sources ---- [*]\n\n");
@@ -53,11 +53,11 @@ int main(int argc, char *argv[])
          * Default action, reads the /etc/apt/sources.list
          * Otherwise reads from the argument argv[2].
          */
-        if (argv[2] == NULL) {
-            if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
+        if (NULL == argv[2]) {
+            if (-1 == open_source_list(&list, SOURCE_LIST)) return -1; // TODO - error.
         } else {
-            if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
-            if (open_source_list(&list, argv[2]) == -1) return -1; // TODO - error and check if the given source is in source.d directory.
+            if (NULL == strstr(argv[2], SOURCE_LIST_D)) return -1;
+            if (-1 == open_source_list(&list, argv[2])) return -1; // TODO - error and check if the given source is in source.d directory.
         } 
         // Display the sources.
         printf("[*] ---- Comments ---- [*]\n\n");
@@ -74,21 +74,21 @@ int main(int argc, char *argv[])
          * Otherwise add the new source in the given path.
          */
         struct source new_source;
-        if (argv[2] == NULL) return 0; // TODO - error.
+        if (NULL == argv[2]) return 0; // TODO - error.
         else {
-            if (argv[3] == NULL) {
-                if (open_source_list(&list, SOURCE_LIST) == -1) return -1; // TODO - error.
+            if (NULL == argv[3]) {
+                if (-1 == open_source_list(&list, SOURCE_LIST)) return -1; // TODO - error.
                 new_source.s_content = (char *) malloc(sizeof(char) *
                                                        strlen(argv[2]) + 2);
-                if (new_source.s_content == NULL) return -1;
+                if (NULL == new_source.s_content) return -1;
 
                 strcpy(new_source.s_content, argv[2]);
             } else {
-                if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
-                if (open_source_list(&list, argv[2]) == -1) return -1;
+                if (NULL == strstr(argv[2], SOURCE_LIST_D)) return -1;
+                if (-1 == open_source_list(&list, argv[2])) return -1;
                 new_source.s_content = (char *) malloc(sizeof(char) *
                                                        strlen(argv[3]) + 2);
-                if (new_source.s_content == NULL) return -1;
+                if (NULL == new_source.s_content) return -1;
 
                 strcpy(new_source.s_content, argv[3]);
             }
@@ -109,22 +109,22 @@ int main(int argc, char *argv[])
          * Otherwise remove the the source in given path.
          */
 
-        if (argv[2] == NULL) return 0; // TODO - error.
+        if (NULL == argv[2]) return 0; // TODO - error.
         else {
             int num = 0;
             errno = 0;
-            if (argv[3] == NULL) {
-                if (open_source_list(&list, SOURCE_LIST) == -1) return -1;
+            if (NULL == argv[3]) {
+                if (-1 == open_source_list(&list, SOURCE_LIST)) return -1;
                 num = atoi(argv[2]);
             } else {
-                if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
-                if (open_source_list(&list, argv[2]) == -1) return -1;
+                if (NULL == strstr(argv[2], SOURCE_LIST_D)) return -1;
+                if (-1 == open_source_list(&list, argv[2])) return -1;
                 num = atoi(argv[3]);
             }
             if (errno != 0) return -1;
 
             int err = rm_source(&list, num);
-            if (err == ACCESS_DENIED) printf("[*] This action require root access.");
+            if (ACCESS_DENIED == err) printf("[*] This action require root access.");
             else if (err == -1) return -1;
             close_source_list(&list);
         }
@@ -134,23 +134,23 @@ int main(int argc, char *argv[])
          * Default action, comment the source in the specific number in /etc/apt/sources.list
          * Otherwise comment the the source in given path.
          */
-        if (argv[2] == NULL) return 0; // TODO - error.
+        if (NULL == argv[2]) return 0; // TODO - error.
         else {
             int num = 0;
             errno = 0;
-            if (argv[3] == NULL) {
-                if (open_source_list(&list, SOURCE_LIST) == -1) return -1;
+            if (NULL == argv[3]) {
+                if (-1 == open_source_list(&list, SOURCE_LIST)) return -1;
                 num = atoi(argv[2]);
             } else {
-                if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
-                if (open_source_list(&list, argv[2]) == -1) return -1;
+                if (NULL == strstr(argv[2], SOURCE_LIST_D)) return -1;
+                if (-1 == open_source_list(&list, argv[2])) return -1;
                 num = atoi(argv[3]);
             }
             if (errno != 0) return -1;
 
             int err = cm_source(&list, num);
-            if (err == ACCESS_DENIED) printf("[*] This action require root access.");
-            else if (err == -1) return -1;
+            if (ACCESS_DENIED == err) printf("[*] This action require root access.");
+            else if (-1 == err) return -1;
             close_source_list(&list);
         }
     } else if (!strcmp(argv[1], "--uncomment-source")) {
@@ -159,23 +159,23 @@ int main(int argc, char *argv[])
          * Default action, uncomment the source in the specific number in /etc/apt/sources.list
          * Otherwise uncomment the the source in given path.
          */
-        if (argv[2] == NULL) return 0; // TODO - error.
+        if (NULL == argv[2]) return 0; // TODO - error.
         else {
             int num = 0;
             errno = 0;
-            if (argv[3] == NULL) {
-                if (open_source_list(&list, SOURCE_LIST) == -1) return -1;
+            if (NULL == argv[3]) {
+                if (-1 == open_source_list(&list, SOURCE_LIST)) return -1;
                 num = atoi(argv[2]);
             } else {
-                if (strstr(argv[2], SOURCE_LIST_D) == NULL) return -1;
-                if (open_source_list(&list, argv[2]) == -1) return -1;
+                if (NULL == strstr(argv[2], SOURCE_LIST_D)) return -1;
+                if (-1 == open_source_list(&list, argv[2])) return -1;
                 num = atoi(argv[3]);
             }
             if (errno != 0) return -1;
 
             int err = ucm_source(&list, num);
-            if (err == ACCESS_DENIED) printf("[*] This action require root access.");
-            else if (err == -1) return -1;
+            if (ACCESS_DENIED == err) printf("[*] This action require root access.");
+            else if (-1 == err) return -1;
             close_source_list(&list);
         }
     } else if (!strcmp(argv[1], "--show-source-lists")) {
@@ -195,12 +195,12 @@ int main(int argc, char *argv[])
         close_source_files_d(source_lists);
     
     } else if (!strcmp(argv[1], "--create-source-list")) {
-        if (argv[2] == NULL) return 0; // TODO - error.
+        if (NULL == argv[2]) return 0; // TODO - error.
         else {
             // TODO - create a new file in /etc/apt/source.d/
         }
     } else if (!strcmp(argv[1], "--remove-source-list")) {
-        if (argv[2] == NULL) return 0; // TODO - error.
+        if (NULL == argv[2]) return 0; // TODO - error.
         else {
             // TODO - remove the source file.
             // TODO - CAUTION do not allow to remove the /etc/apt/source.list for any reason, or at least give warning message.
