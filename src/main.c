@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
             if (-1 == open_source_list(&list, SOURCE_LIST)) return -1; // TODO - error.
         } else {
             if (NULL == strstr(argv[2], SOURCE_LIST_D)) return -1;
-            if (-1 ==open_source_list(&list, argv[2])) return -1; // TODO - error and check if the given source is in source.d directory.
+            if (-1 == open_source_list(&list, argv[2])) return -1; // TODO - error and check if the given source is in source.d directory.
         } 
         // Display the sources.
         printf("[*] ---- Sources ---- [*]\n\n");
@@ -197,16 +197,15 @@ int main(int argc, char *argv[])
     } else if (!strcmp(argv[1], "--create-source-list")) {
         if (NULL == argv[2]) return 0; // TODO - error.
         else {
-            // TODO - create a new file in /etc/apt/source.d/
+            if (-1 == create_source_file(argv[2])) return -1;
         }
     } else if (!strcmp(argv[1], "--remove-source-list")) {
         if (NULL == argv[2]) return 0; // TODO - error.
         else {
-            // TODO - remove the source file.
-            // TODO - CAUTION do not allow to remove the /etc/apt/source.list for any reason, or at least give warning message.
+            if (-1 == remove_source_file(argv[2])) return -1;
         }
-    } else if (!strcmp(argv[1], "--undo")) {
-        // TODO - undo the previous action, using an temporary backup.
+    /*} else if (!strcmp(argv[1], "--undo")) {
+        // TODO - undo the previous action, using an temporary backup. TODO - maybe add this feature later.*/
     } else {
         printf(HELP_MSG);
     }
@@ -214,4 +213,6 @@ int main(int argc, char *argv[])
 #else
     printf("The oparating system is not supported.");
 #endif
+
+    return 0;
 }
