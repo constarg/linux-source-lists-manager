@@ -8,6 +8,7 @@
 #include "io_m.h"
 
 #define ACCESS_DENIED -0x2
+#define ROOT_USER 0x0
 
 struct source 
 {
@@ -87,7 +88,7 @@ extern int rm_source_list(const char *sl_name);
 static inline int add_source(const struct source_list *sl_src, 
                              const struct source s)
 {
-    if (geteuid() != 0) return ACCESS_DENIED;
+    if (geteuid() != ROOT_USER) return ACCESS_DENIED;
     return append_line(s.s_content, sl_src->sl_loc);
 }
 
