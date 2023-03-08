@@ -5,7 +5,7 @@ The source list manager is a powerful terminal-based tool that manages the sourc
 
 # Download & Build
 
-First download the program from GitHub and go to the simple-reverse-shell folder.
+First download the program from GitHub and go to the linux-source-lists-manager folder.
 
 ```
 % git clone https://github.com/EmbeddedCat/linux-source-lists-manager.git
