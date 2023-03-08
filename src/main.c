@@ -197,12 +197,16 @@ int main(int argc, char *argv[])
     } else if (!strcmp(argv[1], "--create-source-list")) {
         if (NULL == argv[2]) return 0; // TODO - error.
         else {
-            if (-1 == create_source_file(argv[2])) return -1;
+            int err = ct_source_list(argv[2]);
+            if ((ACCESS_DENIED == err)) printf("[*] This action require root access.");
+            else if (-1 == err) return -1;
         }
     } else if (!strcmp(argv[1], "--remove-source-list")) {
         if (NULL == argv[2]) return 0; // TODO - error.
         else {
-            if (-1 == remove_source_file(argv[2])) return -1;
+            int err = rm_source_list(argv[2]);
+            if ((ACCESS_DENIED == err)) printf("[*] This action require root access.");
+            else if (-1 == err) return -1;
         }
     /*} else if (!strcmp(argv[1], "--undo")) {
         // TODO - undo the previous action, using an temporary backup. TODO - maybe add this feature later.*/

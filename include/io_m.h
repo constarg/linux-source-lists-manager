@@ -31,8 +31,5 @@ extern int append_line(const char *line, const char *path);
 
 extern char **retv_file_lines(const char *path, size_t *sr_lines);
 
-extern int create_source_file(const char *sl_name);
-
-extern int remove_source_file(const char *sl_name);
 
 #endif
