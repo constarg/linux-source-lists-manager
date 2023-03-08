@@ -137,33 +137,3 @@ char **retv_file_lines(const char *path, size_t *sr_lines)
     close(fd);
     return (char **) realloc(lines, sizeof(char *) * (c_line + 1));
 }
-
-int create_source_file(const char *sl_name)
-{
-    // build the path.
-    char *path = (char *) malloc(sizeof(char) * strlen(SOURCE_LIST_D) +
-                                                strlen(sl_name) + 1);
-    if (NULL == path) return -1;
-    strcpy(path, SOURCE_LIST_D);
-    strcat(path, sl_name);
-
-    int fd = open(path, O_CREAT);
-    if (-1 == fd) return -1;
-
-    close(fd);
-    return 0;
-}
-
-int remove_source_file(const char *sl_name)
-{
-    // build the path.
-    char *path = (char *) malloc(sizeof(char) * strlen(SOURCE_LIST_D) +
-                                                strlen(sl_name) + 1);
-    if (NULL == path) return -1;
-    strcpy(path, SOURCE_LIST_D);
-    strcat(path, sl_name);
-
-    if (-1 == remove(path)) return -1;
-
-    return 0;
-}
