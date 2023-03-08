@@ -24,7 +24,7 @@ followed.<br>
 Usage: source-manager [OPTION]...
 
 	--show-sources [source file],             Display all the sources of one souce file. If no file specified, /etc/apt/sources.list sources will be displayed.
-	--show-comments [source file],             Display all the comments of one source file. If no file specified, /etc/apt/sources.list comments will be displayed.
+	--show-comments [source file],            Display all the comments of one source file. If no file specified, /etc/apt/sources.list comments will be displayed.
 	--add-source [source file] [new source],  Add a new source in a specific source file. If no file specified, the new source stored at the end of /etc/apt/sources.list
 	--remove-source [source file] [row],      Remove a source,in [row], from a specific source file. If no file specified the source in the [row] of /etc/apt/sources.list will be removed.
 	--comment-source [source file] [row],     Comments the source, in [row], of a specific source file. If no file specified the source in the [row] of /etc/apt/sources.list will be commented.
